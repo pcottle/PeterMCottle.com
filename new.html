@@ -1,0 +1,1041 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Peter M Cottle</title>
+
+<meta property="og:title" content="Peter M Cottle.com"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="http://www.petermcottle.com"/>
+<meta property="og:image" content="http://www-inst.eecs.berkeley.edu/~cs184-eh/image-2.png"/>
+<meta property="og:site_name" content="PeterMCottle.com"/>
+<meta property="og:description" content="Peter M Cottle's personal webpage - Pushing the web forward, one commit at a time"/>
+
+
+<link href="style.css" rel="stylesheet" type="text/css"/>
+
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+ <script type="text/javascript" src="jquery.touchwipe.min.js"></script>
+
+<script type="text/javascript">
+
+
+
+/****
+
+Huge Thanks for Hakim El Hattab (author of Reveal.JS) for giving me the inspiration 
+for the site. I used his cubic bezier values for the transition animations,
+but everything else was coded from scratch.
+
+****/
+
+$j = jQuery.noConflict();
+
+/**** GLOBALS ****/
+
+var globalDepth = 0;
+var viewObj = null;
+var debug = false;
+
+function slideObj(id,jObj)
+{
+    this.id = id;
+    this.jObj = jObj;
+    this.myChildren = null;
+    this.myParent = null;
+    this.rightTarget = null;
+    this.leftTarget = null;
+
+    this.clearClass = function() {
+        this.jObj.removeClass('oneLeft oneUpExtra twoLeft center oneRight twoRight oneUp twoUp oneDown twoDown oneDownLeft oneDownRight oneUpLeft oneUpRight');
+    }
+
+
+}
+
+keyMap = {  37:"leftArrow",
+            38:"upArrow",
+            39:"rightArrow",
+            40:"downArrow"
+};
+
+idToChildrenClass = {
+    'fbh2':'ysSlide',
+    'fbh1':'efSlide',
+    'fbHackHeader':'fbhSlide',
+    'berkeleyHeader':'berkSlide',
+    'proj1':'pmcSlide',
+    '184proj':'csSlide',
+    'album1':'pSlide',
+    'photoHeader':'albumSlide',
+    'codeHeader':'projectHeader',
+    'meHeader':'aboutMeSlide',
+    'proj2':'femSlide',
+    'sdHeader':'sdSlide',
+};
+
+idExtraUp = {
+    'sdHeader':true,
+    'berkeleyHeader':true,
+    'album1':true,
+};
+
+listOfMasterParents = ['codeHeader','meHeader','photoHeader','contactHeader'];
+
+idToSlideObj = {};
+
+
+function buildObjectsFromJQuery(jList,pObj)
+{
+    var tempList = new Array();
+    for(var i = 0; i < jList.length; i++)
+    {
+        tempList[i] = jList[i].id;
+    }
+    return buildObjectsFromList(tempList,pObj);
+}
+
+function buildObjectsFromList(idList,parentObj)
+{
+    var objList = new Array();
+    //build all parents
+    for(var i = 0; i < idList.length; i++)
+    {
+        var theId = idList[i];
+        var jObj = $j('#' + theId);
+        var childClass = idToChildrenClass[theId];
+
+        //make this obj, set parent, add to return list
+        var sObj = new slideObj(theId,jObj);
+        sObj.myParent = parentObj;
+
+        //get the list of children
+        var allChildrenJ = $j('.slide.' + childClass);
+
+        //console.log("Got this for child class " + childClass);
+        //console.log("Got this for the query");
+        //console.log(allChildrenJ);
+
+        //build these children too!
+        var myChildrenObj = buildObjectsFromJQuery(allChildrenJ,sObj);
+        sObj.children = myChildrenObj;
+
+        //store in master and return list
+        idToSlideObj[theId] = sObj;
+        objList[i] = sObj;
+
+
+    }
+
+    //set the right left and right targets
+    for(var i = 0; i < idList.length; i++)
+    {
+        var theId = idList[i];
+        var toRight = i + 1;
+        var toLeft = i - 1;
+
+        //only wrap if id list is super long
+        if(idList.length > 5)
+        {
+            if(toRight >= idList.length)
+            {
+                toRight = 0;
+            }
+            if (toLeft < 0)
+            {
+                toLeft = idList.length - 1;
+            }
+        }
+
+        var theObj = idToSlideObj[theId];
+
+        if(toRight < idList.length)
+        {
+            var rightObj = idToSlideObj[idList[toRight]];
+            theObj.rightTarget = rightObj;
+        }
+
+        if(toLeft >= 0)
+        {
+            var leftObj = idToSlideObj[idList[toLeft]];
+            theObj.leftTarget = leftObj;
+        }
+
+    }
+
+    //return the list of objects so we can make the children correctly
+    return objList;
+
+}
+
+function clearAdd(anyObj,classToAdd)
+{
+    if(debug)
+    {
+        console.log("\n\nModifying this obj:");
+        console.log(anyObj);
+        console.log('adding class ' + classToAdd); 
+    }
+    anyObj.clearClass();
+    //anyObj.jObj.addClass(classToAdd);
+    if(classToAdd != 'oneUp')
+    {
+        anyObj.jObj.addClass(classToAdd);
+    }
+    else
+    {
+        //sometimes they need a bit more pushing up
+        if(idExtraUp[anyObj.id])
+        {
+            anyObj.jObj.addClass('oneUpExtra');
+        }
+        else
+        {
+            anyObj.jObj.addClass('oneUp');
+        }
+    }
+}
+
+//if we are moving a level up or down on this center obj,
+//we need to send all children here to the ether...
+function moveLevel(centerObj)
+{
+    //also send yourself
+    clearAdd(centerObj,'');
+    //send all of our siblings
+    if(centerObj.parent)
+    {
+        var childList = centerObj.parent.children;
+        for(var i = 0; i < childList.length; i++)
+        {
+            clearAdd(childList[i],'');
+        }
+    }
+    //send all of our children
+    if(centerObj.children[0])
+    {
+        var childrenList = centerObj.children;
+        for(var i = 0; i < childrenList.length; i++)
+        {
+            clearAdd(childrenList[i],'');
+        }
+
+    }
+
+    if(centerObj.leftTarget)
+    {
+        clearAdd(centerObj.leftTarget,'');
+    }
+
+    if(centerObj.rightTarget)
+    {
+        clearAdd(centerObj.rightTarget,'');
+    }
+}
+
+
+
+function setClassesOn(centerObj)
+{
+    //set the center to center class
+    clearAdd(centerObj,'center');
+
+    //set the left target
+    if(centerObj.leftTarget)
+    {
+        clearAdd(centerObj.leftTarget,'oneLeft');
+
+        var twoLeft = centerObj.leftTarget.leftTarget;
+        var lChild = centerObj.leftTarget.children[0];
+
+        if(twoLeft)
+        {
+           clearAdd(twoLeft,'twoLeft'); 
+        }
+        if(lChild)
+        {
+            clearAdd(lChild,'oneDownLeft');
+        }
+    }
+    //right target
+    if(centerObj.rightTarget)
+    {
+        clearAdd(centerObj.rightTarget,'oneRight');
+        
+        var twoRight = centerObj.rightTarget.rightTarget;
+        var rChild = centerObj.rightTarget.children[0];
+
+        if(twoRight)
+        {
+            clearAdd(twoRight,'twoRight');
+        }
+        if(rChild)
+        {
+            clearAdd(rChild,'oneDownRight');
+        }
+    }
+
+    //above
+    var par = centerObj.myParent;
+    //if theres a parent
+    if(par)
+    {
+        clearAdd(par,'oneUp');
+
+        var parL = par.leftTarget;
+        var parR = par.rightTarget;
+        var parpar = par.myParent;
+        
+        if(parpar)
+        {
+            clearAdd(parpar,'twoUp');
+        }
+        if(parL)
+        {
+            clearAdd(parL,'oneUpLeft');
+        }
+        if(parR)
+        {
+            clearAdd(parR,'oneUpRight');
+        }
+    }
+
+    //children and first grandkid
+    if(centerObj.children[0])
+    {
+        var child = centerObj.children[0];
+        var childR = child.rightTarget;
+        var childL = child.leftTarget;
+
+        clearAdd(child,'oneDown');
+        
+        //if double down
+        if(child.children[0])
+        {
+            clearAdd(child.children[0],'twoDown');
+        }
+        if(childR)
+        {
+            clearAdd(childR,'oneDownRight');
+        }
+        if(childL)
+        {
+            clearAdd(childL,'oneDownLeft');
+        }
+    }
+    //should be done :O
+
+}
+
+function moveRight()
+{
+    if(viewObj.rightTarget)
+    {
+        viewObj = viewObj.rightTarget;
+        updateSlides();
+    }
+}
+
+function moveLeft()
+{
+    if(viewObj.leftTarget)
+    {
+        viewObj = viewObj.leftTarget;
+        updateSlides();
+    }
+}
+
+function moveUp()
+{
+
+    if(viewObj.myParent)
+    {
+        globalDepth -= 1;
+        fixHeader();
+
+        moveLevel(viewObj);
+        viewObj = viewObj.myParent;
+        updateSlides();
+    }
+}
+
+function welcomeSlideClear()
+{
+    //delete it and do the normal
+    moveLevel(viewObj);
+    clearAdd(viewObj,'twoUp');
+
+    //remove the reference from all children
+    for(var i = 0; i < viewObj.children; i++)
+    {
+        viewObj.children[0].myParent = null;
+    }
+
+}
+
+function moveDown()
+{
+    //if this is the welcome slide
+    if(viewObj.id == 'welcomer')
+    {
+        welcomeSlideClear();
+        viewObj = viewObj.children[0];
+        updateSlides();
+        return;
+    }
+
+    if(viewObj.children[0])
+    {
+        globalDepth += 1;
+        fixHeader();
+
+        moveLevel(viewObj);
+        viewObj = viewObj.children[0];
+        updateSlides();
+    }
+}
+
+function fixHeader()
+{
+    if(globalDepth >= 1)
+    {
+        $j('.header').addClass('twoUp');
+    }
+    if(globalDepth == 0)
+    {
+        $j('.header').removeClass('twoUp');
+    }
+}
+
+function checkBrowser()
+{
+    //if we are firefox or IE, the site doesn't work :-/
+    if(/iPad/.test(navigator.userAgent) || /iPhone/.test(navigator.userAgent) || /iPod/.test(navigator.userAgent))
+    {
+        //almost works on the iphone in landscape,
+        //just the top needs to be pushed up
+        $j('#peterHeader').css({'font-size':'60px'});
+        $j('.holder').css({'margin-top':'5%'});
+    }
+    if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
+    { 
+         var ffversion=new Number(RegExp.$1);
+         if(ffversion < 10)
+         {
+             $j('body').append('<div class="ruhrho"><p>Sorry, but this website requires 3D CSS3 transforms to work :-/ I love Firefox as much as the next guy, but currently the -moz-transform isnt implemented in the current stable version (and its broken in the FF10 beta).</p><p>Thus, it would be great if you could switch to <a target="_blank" href="http://www.google.com/chrome/">Chrome</a> or <a target="_blank" href="http://www.apple.com/safari/">Safari</a> to view this website</p><p>If thats not an option, I have dumped all the content from the slides below if you need a link or something real quick. But check out the site with a webkit browser, its pretty cool!</p>');
+             dumpSlides();
+        }
+        else
+        {
+            alert("Sorry for the JS alert, but Firefox 10+'s webkit transform is pretty broken. I recommend switching to Chrome or Safari to see this site in all it's glory. If not that's fine, my only warning is that everything will be way uglier!");
+        }
+    }
+}
+
+function dumpSlides()
+{
+        //go ahead and dump all the slides
+        $j('.holder').css({'width':'100%','height':'100%','overflow':'auto'});
+        $j('.slide').css({'display':'block','width':'600px','height':'700px','float':'left'});
+        $j('.slide').removeClass('oneLeft oneUpExtra twoLeft center oneRight twoRight oneUp twoUp oneDown twoDown oneDownLeft oneDownRight oneUpLeft oneUpRight');
+        $j('.slide').removeClass('slide');
+        $j('body').css('overflow','scroll');
+        $j('.holder').css('overflow','scroll');
+        $j('html').css('overflow','scroll');
+}
+
+
+function histPopState(event)
+{
+    console.log(event);
+    if(event.state)
+    {
+        var theId = event.state.id;
+        var newGlobalDepth = event.state.globalDepth;
+        if(newGlobalDepth != globalDepth)
+        {
+            moveLevel(viewObj);
+        }
+        globalDepth = newGlobalDepth;
+        fixHeader();
+
+        //go ahead and do view object stuff
+        viewObj = idToSlideObj[theId];
+        moveLevel(viewObj);
+        setClassesOn(viewObj);
+    }
+}
+
+function histPushState()
+{
+    history.pushState({'id':viewObj.id,'globalDepth':globalDepth},"Peter M Cottle","?id=" + viewObj.id + "&d=" + String(globalDepth));
+}
+
+function updateArrows()
+{
+    $j('.anArrow').removeClass('yesArrow');
+    if(viewObj.myParent)
+    {
+        $j('#upArrow').addClass('yesArrow');
+    }
+    if(viewObj.leftTarget)
+    {
+        $j('#leftArrow').addClass('yesArrow');
+    }
+    if(viewObj.rightTarget)
+    {
+        $j('#rightArrow').addClass('yesArrow');
+    }
+
+    if(viewObj.children[0])
+    {
+        $j('#downArrow').addClass('yesArrow');
+    }
+}
+
+
+function updateSlides()
+{
+    setClassesOn(viewObj);
+    //also push this state onto the browser history
+    histPushState();
+    //also fix arrows!
+    updateArrows();
+}
+
+function keyPress(e)
+{
+    if(keyMap[e.keyCode] == "leftArrow")
+    {
+        moveLeft();
+    }
+    else if(keyMap[e.keyCode] == "rightArrow")
+    {
+        moveRight();
+    }
+    else if(keyMap[e.keyCode] == 'upArrow')
+    {
+        moveUp();
+    }
+    else if(keyMap[e.keyCode] == 'downArrow')
+    {
+        moveDown();
+    }
+}
+
+function resizeWindow()
+{
+    //get the window height
+    var windowHeight = $j(window).height();
+
+    //need to make sure that the background gradient div pushes
+    //the viewport enough to make the background OK
+
+    //get the body height
+    var bodyHeight = $j('body').height();
+
+    var pusherHeight = $j('#stupidBackgroundGradients').height();
+
+    var toPush = windowHeight - (bodyHeight - pusherHeight);
+
+    console.log("Resizing pusher " + toPush);
+    if(toPush > 0)
+    {
+        $j('#stupidBackgroundGradients').css('height',String(toPush) + 'px');
+    }
+    else
+    {
+        $j('#stupidBackgroundGradients').css('height','0px');
+    }
+}
+
+
+$j(document).ready(function(){
+    //event handlers
+    $j('#scottArrow').click(function(){moveDown();});
+    $j('body').keydown(keyPress);
+    $j('body').touchwipe({
+        wipeLeft: function() { moveRight(); },
+        wipeRight: function() { moveLeft(); },
+        wipeUp: function() { moveUp(); },
+        wipeDown: function() { moveDown(); },
+        min_move_x: 20,
+        min_move_y: 20,
+        preventDefaultEvents: true
+    });
+
+    $j('#upArrow').click(function(){ moveUp(); });
+    $j('#leftArrow').click(function(){ moveLeft(); });
+    $j('#rightArrow').click(function(){ moveRight(); });
+    $j('#downArrow').click(function(){ moveDown(); });
+
+    $j('.anArrow').addClass('noArrow');
+
+    //annoying window resize thing
+    $j(window).resize(function(){resizeWindow();});
+    resizeWindow();
+
+
+    //with the list of master slide ids, go build these
+    var masterParents = buildObjectsFromList(listOfMasterParents);
+
+    //do stuff here...
+    //make the welcome slide
+    var jObj = $j('#welcomer');
+    var welcomeSlide = new slideObj('welcomer',jObj);
+    welcomeSlide.children = masterParents;
+
+
+    window.onpopstate = histPopState;
+
+    //also check for refreshes and direct links...
+    var href = window.location.href;
+
+    //test for when we are refreshing an HTML5 history page, no popstate event
+    var results = /\?id=(\w+)/g.exec(href);
+    //console.log(results);
+    if(results)
+    {
+        var theId = results[1];
+        var depthResults = /&d=(\d+)/g.exec(href);
+        var depth = Number(depthResults[1]);
+        globalDepth = depth;
+
+        viewObj = welcomeSlide;
+        welcomeSlideClear();
+
+        fixHeader();
+        viewObj = idToSlideObj[theId];
+        setClassesOn(viewObj);
+        updateArrows();
+    }
+    else
+    {
+        //just normal load, load the welcome slide
+        viewObj = welcomeSlide;
+        setClassesOn(viewObj);
+        updateArrows();
+    }
+
+    checkBrowser();
+
+
+});
+
+
+</script>
+
+</head>
+<body>
+
+
+
+<div class="header smooth">
+    <h1 id="peterHeader" class="smaller">
+        Peter M Cottle
+    </h1>
+</div>
+
+<div class="holder">
+
+    <div id="welcomer" class="slide">
+
+        <h3>
+            Welcome!
+        </h3>
+        <h4> Please use the Arrow keys or Swipe Gestures for Navigation</h4>
+
+        
+        <p></p><p></p>
+        <h4 id="scottArrow" style="cursor:pointer;text-align:center">▼</h4>
+    </div>
+
+
+    <div id="photoHeader" class="slide">
+        <h2>
+            Photography
+        </h2>
+
+            <img class="slideImg imgReflect imgBevel" src="cropped2.jpeg"/>
+
+    </div>
+
+            <div id="album1" class="slide albumSlide">
+                <h4>Origins</h4>
+                <p>I started photography at the end of my senior year in order to capture my favorite places around UC San Diego. Since then I've joined the Blue and Gold Yearbook team at Berkeley in order to photograph campus events, and I'm also an active member of the UCSD Photography club. My favorite photography is architecture, macro, and landscape.</p>
+                <h4>Work</h4>
+                <p>In addition to the photos on this website, I also have other work available at my <a target="_blank" href="http://www.flickr.com/photos/petercottle/">Flickr Photostream</a>. I also have included some of my favorite photos below </p>
+            </div>
+
+<div style="text-align:center" id="pSlideId31" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5036/5798850538_924f55bf11_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId16" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5229/5671667524_ce8cc47bdd_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId2" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm6.staticflickr.com/5022/5798846004_1bc6c737a7_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId12" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5058/5533926734_6dc3549250_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId24" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm7.staticflickr.com/6232/6247297632_6a26e67226_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId7" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm7.staticflickr.com/6151/6245702496_6411aa7ed4_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId4" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm7.staticflickr.com/6220/6336001057_6d3fa95b87_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId25" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm7.staticflickr.com/6098/6246771661_05542ccf6d_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId20" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm3.staticflickr.com/2258/5798849242_d5cdd6d306_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId19" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5028/5671684456_f1f2dcf08c_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId17" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5300/5521552921_188c94a0cf_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId15" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5148/5671668388_5181d9a300_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId8" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm6.staticflickr.com/5184/5671127887_dd621089fb_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId22" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm3.staticflickr.com/2234/5798858562_5d2c9732bb_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId3" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm6.staticflickr.com/5313/5878861605_9d31164f00_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId5" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm7.staticflickr.com/6059/6352770256_58a540f0de_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId13" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5137/5534004474_67c80a1db2_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId27" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm7.staticflickr.com/6154/6184472754_98dc3bc28e_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId26" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm7.staticflickr.com/6093/6352025869_44326f385b_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId30" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm3.staticflickr.com/2387/5798298019_54b1ecd55b_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId21" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm4.staticflickr.com/3311/5798857476_27da8d14be_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId11" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5065/5671112731_25b017ffca_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId28" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm7.staticflickr.com/6011/5879425834_2e252726f9_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId18" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5064/5625920179_051c790325_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId14" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5096/5536658380_385cdfdbfb_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId9" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm6.staticflickr.com/5023/5625921927_ef0faa574b_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId23" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5275/5902903622_46d38b3516_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId29" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm3.staticflickr.com/2758/5859265038_796c7a928f_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId0" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm3.staticflickr.com/2243/5798306463_046af09607_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId10" class="slide pSlide imgUp"><img class="imgSlideWide imgBevel imgReflect" src="http://farm6.staticflickr.com/5171/5536647000_0b82862de1_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId6" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm7.staticflickr.com/6049/6352025433_8a6e121d2b_z.jpg"/></div>
+<div style="text-align:center" id="pSlideId1" class="slide pSlide imgUp"><img class="imgSlideTall imgBevel imgReflect" src="http://farm6.staticflickr.com/5070/5798299253_902bcdbee4_z.jpg"/></div>
+<div id="pEnd" class="slide pSlide"></div>
+
+    <div id="contactHeader" class="slide">
+        <h2> Contact </h2>
+
+            <img class="slideImg imgReflect imgBevel" src="contact.png"/>
+            <p></p>
+ <a target="_blank" href="mailto:petermcottle@gmail.com">petermcottle@gmail.com</a>
+                <p></p>
+                <a target="_blank" href="latest_resume.pdf">Resume</a>
+
+
+    </div>
+
+
+    <div id="codeHeader" class="slide">
+
+        <h2>
+            Code
+        </h1>
+
+        <img class="slideImg imgReflect" src="http://farm6.staticflickr.com/5138/5560694806_720d119385_z.jpg"/>
+
+
+    </div>
+
+            <div id="184proj" class="slide projectHeader">
+                <h2> CS 184 - Computer Graphics </h2>
+            </div>
+
+                <div id="cs1" class="slide csSlide">
+                    <h4>Ray Tracer </h4>
+
+                    <p>The best assignment (by far) for CS 184 was programming a complete ray tracer in C++. It was incredibly exciting (and sometimes intimidating) to build everything from the ground up; ray-sphere intersection tests, transformation matrices, homogenous coordinates, camera locations, and everything else was coded from scratch. At the end of the assignment though, I had a piece of software that I was really proud of.</p>
+                    <p> After getting the basics down, I went the extra mile and implemented some other features. I got soft-shadows working (as well as non-linear projection). To make some nice final renders, I wrote a python script to generate interesting scene files.</p>
+                    <a target="_blank" href="http://www-inst.eecs.berkeley.edu/~cs184-eh/hw4.html">Main Webpage</a>
+
+                </div>
+
+                <div id="cs2" class="slide csSlide">
+                   <img class="imgSlideTall imgUp imgBevel imgReflect" src="http://www-inst.eecs.berkeley.edu/~cs184-eh/image-2.png"/> 
+                </div>
+
+                <div id="cs3" class="slide csSlide">
+                    <img class="imgSlideTall imgUp imgBevel imgReflect" src="http://www-inst.eecs.berkeley.edu/~cs184-eh/image-3.png"/>
+                </div>
+
+                <div id="cs4" class="slide csSlide">
+                   <h4> Parametric Surfaces </h4> 
+
+                   <p> We also completed a small assignment on Parametric surface subdivision, using both a uniform and adaptive algorithm. The assignment was rather simple, but it was really exciting to see an application of such a theoretical concept into actual code to produce a real model. The triangle-based adaptive subdivision algorithm was also fun to code and produces really intricate patterns in the final models.</p>
+                   <a target="_blank" href="http://www-inst.eecs.berkeley.edu/~cs184-eh/hw5.html">Main Webpage</a>
+
+                </div>
+
+                <div id="cs5" class="slide csSlide">
+                    <img class="imgSlide imgBevel imgUp imgReflect" src="http://i.imgur.com/KABc2.png"/>
+                </div>
+
+                <div id="cs6" class="slide csSlide">
+                    <h4>Particle Simulator </h4>
+                    <p>My final project for CS 184 was a gravity particle simulator with user interaction. Once complete, I was able to watch orbits evolve over time from different configurations. It still astounds me how such random positions and velocities (when put into a gravity simulator) can draw out such mathematically beautiful orbit paths.</p>
+                </div>
+                <div id="cs65" class="slide csSlide">
+                    <p>This assignment was tricky in certain places though. I had to use a 3-2-1 set of Euler angles for camera position and orientation, and then I had to map angular velocities about each of the Euler basis vectors back into changes in each Euler angle. Ray picking from user clicks and getting the particle insertion GUI flow down was difficult (but rewarding) as well.</p>
+                    <a target="_blank" href="report.pdf">Report PDF</a><p></p>
+                    <a target="_blank" href="poster.pdf">Poster PDF</a> <p></p>
+                    <a target="_blank" href="http://www.youtube.com/watch?v=r_68uPETMJk">Youtube Video</a>
+                </div>
+
+                <div id="cs7" class="slide csSlide">
+                    <img class="imgSlide imgBevel imgUp imgReflect" src="particle.png"/>
+                </div>
+                <div id="csEnd" class="slide csSlide">
+                </div>
+
+             <div id="proj1" class="slide projectHeader">
+                <h2> PeterMCottle.com </h2>
+            </div>
+                <div id="pmc1" class="slide pmcSlide">
+                    <h4> Programming this website </h4>
+                    <p>When I was shopping around for new personal website ideas, Hakim El Hattab's <a target="_blank" href="http://lab.hakim.se/reveal-js/">REVEAL.JS</a> stood out as a really unique and interesting concept. The only downside was that Hakim's implementation was more focused on actual slide decks rather than a fully 3D, heirarchal navigation system for the web. Using his work as inspiration, I set out to implement a unique (and hopefully cool) way to present static content on the web.</p>
+                </div>
+                <div id="pmc2" class="slide pmcSlide">
+                    <h4>Implementation</h4>
+                    <p>The majority of the heavy lifting is done via the webkit transition CSS3 property, which is an <b>amazingly</b> way to animate changes between CSS3 states. Once I realized this was the backbone of Reveal.JS, I set out to code my own CSS3 position classes and animate between them.</p>
+                    <p>My original implementation was just animating a static X-Y grid, but that quickly became very restrictive and confusing. I then switched to a doubly-linked graph approach, where the connectivity between slides only exists within memory. Using the arrow keys simplify transfers the current viewport location. This method works great for maintaing intuitive navigation while also lifting any restrictions on the layout of slides.</p>
+                </div>
+                <div id="pmc3" class="slide pmcSlide">
+                    <h4>HTML5</h4>
+                    <p>I also used HTML5 browser history to store the location and state of each viewport location, so you can easily link to and bookmark specific slides. You can also hit the back and forward buttons to traverse the slide graph in the exact reverse order... Try it out now!</p>
+                    <h4>Navigation</h4>
+                    <p>I wanted an intuitive navigation interface that was friendly for both power users and mobile devices. With these two in mind, I settled on a combination of keyboard navigation for "normal" browsers and swipe gestures for mobile devices and tablets. I think this reaches the perfect balance between ease of use and rapid traversal.</p>
+                </div>
+
+
+            <div id="proj2" class="slide projectHeader">
+                <h2>ME 280a - Finite Elements </h2>
+            </div>
+                    
+                    <div id="fem1" class="slide femSlide">
+                    <h4> ME 280A - Finite Elements </h4>
+                        <p>
+                        ME 280A was by far the hardest (and most rewarding) class
+                        of my academic career. Before taking the class, I thought I understood the finite
+                        element method - stiffness matrices, loading vectors, and 
+                        everything else was quite intuitive and my Matlab
+                        scripts worked great.
+
+                        </p>
+                        <p>
+
+                        Little did I know that my understanding only brushed the surface
+                        of the wonders of the finite element method. Basis functions,
+                        Galerkins method, the Best Approximation theroem, and the derivation
+                        of the weak form were all unknown to me. After Professor
+                        Zohdi's lectures, seven rigorous homework assignments, and an
+                        intense final test I finally feel like I have a <i>deep</i>
+                        understanding of the subject. I also loved hearing about
+                        the history of FEM and how a lot of this original NASTRAN software
+                        actually brought us to the moon.
+                        </p>
+
+                    </div>
+
+                    <div id="fem2" class="slide femSlide">
+                    <h4> Basis Functions </h4>
+                    <p>
+                        One of our first assignments was a simple 1D FEM solver in matlab,
+                        but we were instructed to use linear, quadratic, and cubic basis elements. This assignment was a great demonstration of changes in the fundamental stiffness matrix based on basis function order. We also used the isoparametric mapping to do all calculations and integrals over the master domain, which then allowed us to employ Gaussian quadrature to speed up the integration. This assignment was a great introduction to FEM and laid the basis for the rest of our work (no pun intended :P )
+                        </p>
+                        <a target="_blank" href="hw2.pdf">PDF</a>
+                    </div>
+                    <div id="fem25" class="slide femSlide">
+
+                        <img class="imgSlide imgReflect imgBevel" src="hw2.png"/>
+
+                    </div>
+
+                    <div id="fem3" class="slide femSlide">
+                        <h4> Pre-Conditioned Conjugate Gradient Solver</h4>
+                        <p>Our next major homework assignment was to program an FEM solver with element-by-element storage and a Conjugate Gradient solver. Rather than storing the entire stiffness matrix, we instead moved towards storing only the unique elements of each elemental stiffness matrix; this seriously reduced our memory overhead (at the expense of more complex algorithms). We then employed a preconditioned conjugate gradient solver that seriously sped up our solution process (effectively reducing it from O(N^3) to O(N)). This homework assignment showed us the practical implementation details of the FEM method and the benefit of working on performance.</p>
+                        <a target="_blank" href="hw3.pdf">PDF</a>
+
+                    </div>
+
+                    <div id="fem4" class="slide femSlide">
+                        <img class="imgSlide imgReflect imgBevel" src="hw3.png"/>
+                    </div>
+                    <div id="fem5" class="slide femSlide">
+                        <h4>Time Dependency</h4>
+                        <p>The next major homework assignment was looking at one dimensional, time-dependent ODE's. We explored the derivation of the explicit and implicit forms and ended up programming the implicit version. From programming this assignment, I got a great feel for how time-dependence affects the weak formulation and the process of iterating through a given variable. We also produced some very nice-looking plots...</p>
+
+                        <a target="_blank" href="hw5.pdf">PDF</a>
+
+                    </div>
+
+                    <div id="fem6" class="slide femSlide">
+                        <img class="imgSlide imgReflect imgBevel" src="hw5.png"/>
+                    </div>
+
+                    <div id="fem7" class="slide femSlide">
+                        <h4>2D Thermal Conductivity</h4>
+                        <p>
+                        Our last major programming assignment was implementing the finite element method on a thermal conductivity ODE over a two dimensional arch. We had to write both a uniform and adaptive arch mesher to actually produce the connectivity matrix and nodal locations; after this challenge was complete, we had to implement the entire FEM method from scratch in two dimensions. I chose to implement everything in terms of anonymous functions (similar to a Scheme approach) which simplified some of my functionality down the line.</p>
+ <a target="_blank" href="hw6.pdf">PDF</a>
+                    </div>
+
+                    <div id="fem8" class="slide femSlide">
+
+                        <img class="imgSlide imgReflect imgBevel" src="hw6.png"/>
+                    </div>
+
+                    <div id="fem9" class="slide femSlide">
+
+                        <h4>Final Exam</h4>
+                        <p>
+                        The final exam was the first (and only) test we had on the theoretical parts of the class. After 15 weeks of pure theoretical lectures, we had a lot to study to prepare :O For three straight days, three other students and I studied in Blum Hall's basement on campus and endlessly drilled on the theoretical parts of the class.</p>
+                    </div>
+                    <div id="fem10" class="slide femSlide">
+                        <p>The interesting thing is that after these three days, I actually <i>understood</i> everything. It wasn't like a typical class where you memorize the important concepts and regurgitate them on the test... this was something else altogether. At the end of those three days, we all knew how to derive the weak form for any ODE (whether or not it was non-linear, spatially variant, three dimensional, time-variant, etc etc). We derived (by ourselves) the variables for the Conjugate Gradient method, the process of linearizing and iterating through a non-linear time-variant ODE, the geometric error as a function of the Jacobian mapping, the divergence theorem, Galerkin's best approximation theorem, and many others. It was a crazy 72 hours of my life, but I left that classroom feeling like a graduate student for the first time.</p>
+                        <a target="_blank" href="hw7.pdf">Last HW PDF</a>
+
+                        
+
+                    </div>
+
+
+
+                    <div id="femEnd" class="slide femSlide">
+                    </div>
+
+        <div id="fbHackHeader" class="slide projectHeader">
+            <h2>Facebook Hackathon Hacks</h2>
+        </div>
+
+
+            <div id="fbh1" class="slide fbhSlide">
+                <h2>Emoti-Face</h2>
+            </div>
+                <div id="ef1" class="slide efSlide">
+                <h4>Idea</h4>
+                    <p>For the Facebook Hackathon 2011 finals, Anirudh, Josh, and I set out to create a gif-embedding service for Facebook chat. We wanted to be able to inline gifs into chat and record our own, but the real challenge was the idea we used to transfer data between parties.</p>
+                    <p>We essentially decided to transfer the actual binary data of the recorded gif <i>through</i> Facebook chat automatically. This meant writing a huge userscript to actually implement a crude TCP-like protocol and algorithm to send packets through the actual website.</p>
+
+                </div>
+                <div id="ef2" class="slide efSlide">
+                    <h4>Implementation</h4>
+                    <p> We had a localhost python server running to load up the file binary data, convert them to base64 text, and then form actual packets with UUID's and sequence numbers. We dumped all of those packets over localhost into a user script running on Facebook's website. From here we used javascript to populate the chat field and applescript (on the backend) to emulate keypresses. This worked great, until we discovered that Facebook's chat would drop all packets after the first 20.</p>
+                    <p>We then had to essentially come up with a crude TCP-like protocol for handshakes and packet requests. It was pretty hilarious (and quite ironic) that we were implementing TCP on top of TCP, but that's what hackathons are all about!</p>
+                </div>
+                <div id="ef3" class="slide efSlide">
+                    <img class="imgSlide imgBevel imgReflect" src="ef.png"/>
+                </div>
+                <div id="ef4" class="slide efSlide">
+                    <h4>Results </h4>
+                    <p>At the end of 24 hours, we actually had something that worked! We were able to send files over chat and recompile them on the other side. The transfer speed was abysmal, but I think the entire team was simply proud that we got it to work :P</p>
+                    <a target="_blank" href="http://www.youtube.com/watch?v=tk5m0mqsrFs">
+                    Youtube Video showing Transfer</a> <p></p>
+                    <a target="_blank" href="http://news.ycombinator.com/item?id=3310036">HackerNews Article</a>
+                    <p></p>
+                    <a target="_blank" href="https://github.com/pcottle/emotiface">GitHub</a>
+
+                </div>
+
+
+        <div id="fbh2" class="slide fbhSlide">
+            <h2>Youtube Sync</h2>
+        </div>
+            <div id="ys1" class="slide ysSlide">
+                <h4>Idea</h4>
+                    <p>I always liked watching youtube videos together with friends (in real life), but sending them a link over chat just isn't the same experience. I set out to create a youtube sychronization service that embedded into Facebook chat and would sychronize playback between two parties.</p>
+            </div>
+            <div id="ys2" class="slide ysSlide">
+                <h4>Implementation</h4>
+                <p>This hack was pretty simple; it was a userscript running on Facebook to listen for keypresses and embed an iFrame when a youtube link was pasted into chat. There was an external site that handled the youtube embedding and javascript to sychronize the player state, and then I used the excellent Now.JS running on a Node.js instance on heroku to handle the state relays between parties. After a lot of tweaking (and wrestling with the finicky Youtube flash player), I ended up getting something that worked pretty well!</p>
+            </div>
+            <div id="ys3" class="slide ysSlide">
+                <h4>Results</h4>
+                <img class="slideImg imgReflect imgBevel" src="ys.png"/><p></p>
+                <a target="_blank" href="http://www.youtube.com/watch?v=xHWABU4rZAw">Youtube Video</a>
+            </div>
+
+    <div id="meHeader" class="slide">
+        <h2>
+            Education
+        </h2>
+
+        <img class="slideImg imgReflect imgBevel" src="cropped.jpeg"/>
+
+    </div>
+            <div id="berkeleyHeader" class="slide aboutMeSlide">
+                <h4>UC Berkeley - Graduate</h4>
+                <img class="slideImg imgReflect imgBevel" src="http://farm7.staticflickr.com/6166/6199966590_1e008b83c0_z.jpg"/>
+            </div>
+
+                    <div id="berk1" class="slide berkSlide">
+                        <h4>Graduate Study</h4>
+                        <p>My time at UC Berkeley has been absolutely priceless. The research on campus (in all engineering disciplines) is absolutely brilliant, and being surrounded by such successful peers has driven me to excel in everything that I do. The campus has a great deal of legacy as well, which makes me try even harder to fill the giant shoes left behind by previous Berkeley alumni classes.</p>
+                        <p>Since I'm a graduate student in the MS/PhD Program, I'm not sure when my stay will end, but I have enjoyed every minute of it so far. Go bears!</p>
+                        <a target="_blank" href="latest_resume.pdf">My Resume</a>
+
+                    </div>
+
+                
+
+            <div id="sdHeader" class="slide aboutMeSlide">
+                <h4>UC San Diego - Undergraduate</h4>
+                <img class="imgSlide imgReflect imgBevel" src="http://farm6.staticflickr.com/5139/5521463894_e30e63a8ce_z.jpg"/>
+            </div>
+
+                <div id="sd1" class="slide sdSlide">
+                    <h4>Curriculum</h4>
+                    <p>I actually studied Mechanical Engineering at UC San Diego for my undergraduate degree. When I began college, I found the introductory CS classes to be fairly straight-forward as someone with a previous programming background. In order to get the most out of my degree, I wanted a major where I was challenged in every class and exposed to completely new concepts. I found exactly that in Mechanical Engineering.</p>
+                    </div>
+                    <div id="sd14" class="slide sdSlide">
+
+                    <p>Mechanical study is a completely different (and amazing) beast as compared to computer science. The Navier Stokes equation, electrical design, thermodynamics, heat transfer, fluid mechanics, intermediate dynamics - all of these subjects had a rigorous theoretical basis that really expanded my mind and taught me to think in new and entirely different ways. I decided to teach myself programming in my spare time while taking mechanical classes to get the best of both worlds. I owe a lot of my intellectual ability to the mechanical classes I took and the ways they challenged me.</p> 
+                </div>
+
+                <div id="sd15" class="slide sdSlide">
+
+                    <img class="imgBevel imgSlide imgReflect" src="http://farm6.staticflickr.com/5064/5671686406_48e0c27dbd_z.jpg"/>
+
+                </div>
+                <div id="sd2" class="slide sdSlide">
+                    <h4>Tour Guides</h4>
+                    <p>The most rewarding experience of my undergraduate degree (after the curriculum) was serving as a University College Ambassador for two years. I had never been the strongest public speaker in high school, and I highly admired the confidence and ease with which the tour guides at UCSD presented. After taking on other jobs to gain experience, I finally applied, trained, and graduated to a university tour guide my junior year.</p>
+                </div>
+                <div id="sd25" class="slide sdSlide">
+                    <p>
+                    After the 10 week training program, I finally reached the presentation / public speaking "zen" that other tour guides displayed so prominently. After enough practice and worry and stress about being the "perfect" public speaker during training, I finally abandoned that entire <i>mode of thought</i> and instead decided to just present as myself. It was this change in mindset that led to me to become a great tour guide, and I had the pleasure of speaking to thousands of UC San Diego visitors over the course of my career.
+                    </p>
+                </div>
+
+                <div id="sd3" class="slide sdSlide">
+                    <div class="imgCenter80">
+                    <img class="imgSlideTall imgBevel imgReflect" src="https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash2/164302_488418850979_545515979_6518669_6918322_n.jpg"/>
+ <p>A photo of other tour guides and myself in a UCSD brochure</p>
+                    </div>
+
+                </div>
+
+
+                <div id="sd4" class="slide sdSlide">
+                    <h4>Culture</h4>
+                <p>I absolutely loved living in San Diego for four years. The weather was excellent, the beach was right next to campus, and the entire city has focus on living a healthy lifestyle. Sometimes I think that Silicon Valley could benefit from some of the "laid back" atmosphere that San Diego exemplifies :P </p>
+                <p>After running cross country in high school, I ran a marathon my sophomore year (2:47) and then switched to triathlon full time. In addition to photography, I love to swim, bike, and run all over whichever city I currently reside in. I also try to keep up to date with technology news, and sometimes I steal away time to practice my secret hobby of ceramics</p>
+
+                </div>
+
+                <div id="sd5" class="slide sdSlide">
+                    <div class="imgCenter80">
+                        <img class="imgSlideTall imgBevel imgReflect" src="https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash2/40766_420354465979_545515979_5345431_7864634_n.jpg"/>
+                        <p>At the San Diego Zoo</p>
+                    </div>
+                </div>
+
+                <div id="sdEnd" class="slide sdSlide">
+                </div>
+
+
+</div>
+
+<div class="arrowHolder">
+    <div style="text-align:center">
+        <font class="anArrow" id="upArrow">▲</font>
+    </div>
+                <font class="anArrow" id="leftArrow">◄</font>
+                
+                <font class="anArrow" style="position:relative;right:-27px;"id="rightArrow">►</font>
+    <div style="text-align:center">
+        <font id="downArrow" class="anArrow">▼</font>
+    </div>
+</div>
+<div id="stupidBackgroundGradients" style="height:1000px;width:2000px;">
+</div>
+
+</body>
+</html>
