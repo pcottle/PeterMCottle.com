@@ -237,6 +237,17 @@ h1 {
 	        transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
 }
 
+.twoUpExtra {
+    display:block;
+    opacity:0.7;
+	
+	-webkit-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
+	   -moz-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
+	    -ms-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
+	        transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
+}
+
+
 
 .twoDown {
 	display: block;
