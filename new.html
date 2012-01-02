@@ -523,8 +523,30 @@ function keyPress(e)
     }
 }
 
+function aspectRatioCheck()
+{
+    //this might be the inverse of aspect ratio but you know what I mean!
+    var aspectRatio = $j(window).height() / $j(window).width();
+    if(aspectRatio < 0.36)
+    {
+        //do something
+        $j('body').css('-webkit-perspective','400px');
+
+    }
+    else
+    {
+        //undo thatsomething
+        $j('body').css('-webkit-perspective','600px');
+    }
+}
+
+
+
 function resizeWindow()
 {
+    //check aspect ratio
+
+
     //get the window height
     var windowHeight = $j(window).height();
 
@@ -538,7 +560,7 @@ function resizeWindow()
 
     var toPush = windowHeight - (bodyHeight - pusherHeight);
 
-    console.log("Resizing pusher " + toPush);
+    //console.log("Resizing pusher " + toPush);
     if(toPush > 0)
     {
         $j('#stupidBackgroundGradients').css('height',String(toPush) + 'px');
