@@ -60,6 +60,7 @@ keyMap = {  37:"leftArrow",
 };
 
 idToChildrenClass = {
+    'friendMapperProj':'fmSlide',
     'fbh2':'ysSlide',
     'fbh1':'efSlide',
     'fbHackHeader':'fbhSlide',
@@ -75,6 +76,7 @@ idToChildrenClass = {
 };
 
 idExtraUp = {
+    'friendMapperProj':true,
     'sdHeader':true,
     'photoHeader':true,
     'berkeleyHeader':true,
@@ -763,6 +765,39 @@ $j(document).ready(function(){
 
     </div>
 
+            <div id="friendMapperProj" class="slide projectHeader">
+                <h2> Friend Mapper </h2>
+            </div>
+
+                <div id="fm1" class="slide fmSlide">
+
+                    <h4>Friend Mapper</h4>
+                    <p> In order to learn WebGl and the Facebook graph API over winter break, I wanted to tackle a project that combined them together into a unique application experience. With so many diverse and interesting personal stories on Facebook, it can be hard to really appreciate the beauty of the diverse collection of friends we have. I sought out to visualize these geographic relationships (both in present and in the past) and display them interactively.</p>
+                
+                </div>
+
+                <div id="fm2" class="slide fmSlide">
+                    <h4>Implementation</h4>
+                    <p>There was a sizeable amount to learn for this project; I had to dive into the WebGL shader language, the intricacies of the Facebook graph API, GPU data buffering, off-frame rendering, and several other complex ideas I had never approached before. There was also a considerable design challenge to represent this rich graph of relationships in memory. Because all the data from the Facebook graph arrives asychronously, the graph essentially has to be constructed in any order at any time. Multiply queries are usually required to resolve the GPS coordinates of a particular place, so several layers of asychronous requests have to be made (and cascaded) as data is available or not. After a large amount of abstraction, I obtained a pretty robust system that all operates independently.</p>
+                </div>
+
+                <div id="fm3" class="slide fmSlide">
+
+                    <img class="slideImg imgReflect imgBevel" src="fm1.png"/>
+                </div>
+
+                <div id="fm35" class="slide fmSlide">
+                    <img class="slideImg imgReflect imgBevel" src="fm2.png"/>
+                </div>
+
+                <div id="fm4" class="slide fmSlide">
+                    <p>Links to the Application, the Github page, and a video showing the application are below:</p>
+ <a target="_blank" href="http://petercottle.com/friendMapper2/index.html">Application</a><p></p>
+                <a target="_blank" href="http://www.youtube.com/watch?v=z4nVX-ySwH4">Youtube Video</a><p></p>
+                <a target="_blank" href="https://github.com/pcottle/FriendMapper">Github Page</a>
+
+                </div>
+
             <div id="184proj" class="slide projectHeader">
                 <h2> CS 184 - Computer Graphics </h2>
             </div>
@@ -793,7 +828,7 @@ $j(document).ready(function(){
                 </div>
 
                 <div id="cs5" class="slide csSlide">
-                    <img class="imgSlide imgBevel imgUp imgReflect" src="http://i.imgur.com/KABc2.png"/>
+                    <img class="imgSlide imgBevel imgUp imgReflect" src="KABc2.png"/>
                 </div>
 
                 <div id="cs6" class="slide csSlide">
@@ -859,38 +894,6 @@ $j(document).ready(function(){
                         the history of FEM and how a lot of this original NASTRAN software
                         actually brought us to the moon.
                         </p>
-
-                    </div>
-
-                    <div id="fem2" class="slide femSlide">
-                    <h4> Basis Functions </h4>
-                    <p>
-                        One of our first assignments was a simple 1D FEM solver in matlab,
-                        but we were instructed to use linear, quadratic, and cubic basis elements. This assignment was a great demonstration of changes in the fundamental stiffness matrix based on basis function order. We also used the isoparametric mapping to do all calculations and integrals over the master domain, which then allowed us to employ Gaussian quadrature to speed up the integration. This assignment was a great introduction to FEM and laid the basis for the rest of our work (no pun intended :P )
-                        </p>
-                        <a target="_blank" href="hw2.pdf">PDF</a>
-                    </div>
-                    <div id="fem25" class="slide femSlide">
-
-                        <img class="imgSlide imgReflect imgBevel" src="hw2.png"/>
-
-                    </div>
-
-                    <div id="fem3" class="slide femSlide">
-                        <h4> Pre-Conditioned Conjugate Gradient Solver</h4>
-                        <p>Our next major homework assignment was to program an FEM solver with element-by-element storage and a Conjugate Gradient solver. Rather than storing the entire stiffness matrix, we instead moved towards storing only the unique elements of each elemental stiffness matrix; this seriously reduced our memory overhead (at the expense of more complex algorithms). We then employed a preconditioned conjugate gradient solver that seriously sped up our solution process (effectively reducing it from O(N^3) to O(N)). This homework assignment showed us the practical implementation details of the FEM method and the benefit of working on performance.</p>
-                        <a target="_blank" href="hw3.pdf">PDF</a>
-
-                    </div>
-
-                    <div id="fem4" class="slide femSlide">
-                        <img class="imgSlide imgReflect imgBevel" src="hw3.png"/>
-                    </div>
-                    <div id="fem5" class="slide femSlide">
-                        <h4>Time Dependency</h4>
-                        <p>The next major homework assignment was looking at one dimensional, time-dependent ODE's. We explored the derivation of the explicit and implicit forms and ended up programming the implicit version. From programming this assignment, I got a great feel for how time-dependence affects the weak formulation and the process of iterating through a given variable. We also produced some very nice-looking plots...</p>
-
-                        <a target="_blank" href="hw5.pdf">PDF</a>
 
                     </div>
 
