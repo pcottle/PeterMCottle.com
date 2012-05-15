@@ -781,14 +781,16 @@ $j(document).ready(function(){
                     <img class="slideImg imgReflect imgBevel" src="lg2.PNG"/>
                 </div>
 
-                <div id="lg3" class="slide lgSlide">
+                <div id="lg34" class="slide lgSlide">
                     <img class="slideImg imgReflect imgBevel" src="lg3.PNG"/>
                 </div>
 
                 <div id="lg4" class="slide lgSlide">
-                    <p>Eventually I'll write up a formal paper for this algorithm, but for now the Github source and Hackernews Discussion will have to suffice. I also highly recommend checking out the demo of the algorithm running!</p>
+                    <p>Eventually I'll write up a formal paper for this algorithm, but for now the Github source will have to suffice. I also highly recommend checking out the demo of the algorithm running!</p>
                     <a target="_blank" href="http://petercottle.com/liquidGraph/index.html?demo">Algorithm Demo</a>
+                    <p></p>
                     <a target="_blank" href="http://news.ycombinator.org/item?id=3896283">HackerNews Discussion</a>
+                    <p></p>
                     <a target="_blank" href="https://github.com/pcottle/LiquidGraph">Github</a>
                 </div>
 
@@ -798,6 +800,28 @@ $j(document).ready(function(){
             </div>
 
                 <div id="gpu1" class="slide gpuSlide">
+                    <h4>Genetic GPU</h4>
+                    <p>Genetic GPU was a really fun final project I completed for ME202 at UC Berkeley. It essentially performs Non-Convex Optimization on the GPU with WebGL by using some clever shader hacks. It can sample from any N-Dimensional space (despite only having a 2D grid of vertices) and optimizes most surfaces quite quickly. It runs about 55x faster than Matlab without extra optimizations (and while drawing the surface for the user).</p>
+                    <p>I also added realtime clustering support -- users can send the link to a friend and automatically join a "computational room" where the search space is divided up and global minimums are compared across workers. I used the excellent Now.JS for this part of the project. Between the realtime clustering and the parallel nature of GPU work, I titled this project "Massively Parallel Genetic Algorithms."</p>
+                </div>
+
+                <div id="gpu2" class="slide gpuSlide">
+
+                </div>
+
+                <div id="gpu3" class="slide gpuSlide">
+
+                </div>
+
+                <div id="gpu4" class="slide gpuSlide">
+
+                </div>
+
+                <div id="gpu5" class="slide gpuSlide">
+                   <p>I completed a writeup on the algorithm for the class; it's from a very high level but should give an idea of the strategies used perform such rapid optimization. The Github Source and a link to the application are below as well</p> 
+                    <a target="_blank" href="http://petercottle.com/GeneticGPU/index.html">Application Demo</a>
+                    <a target="_blank" href="https://github.com/pcottle/GeneticGPU">Github Source</a>
+                    <a target="_blank" href="
 
                 </div>
 
