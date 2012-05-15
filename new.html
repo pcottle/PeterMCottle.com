@@ -61,11 +61,7 @@ keyMap = {  37:"leftArrow",
 
 idToChildrenClass = {
     'friendMapperProj':'fmSlide',
-    'fbh2':'ysSlide',
-    'fbh1':'efSlide',
-    'fbHackHeader':'fbhSlide',
     'berkeleyHeader':'berkSlide',
-    'proj1':'pmcSlide',
     '184proj':'csSlide',
     'album1':'pSlide',
     'photoHeader':'albumSlide',
@@ -848,26 +844,6 @@ $j(document).ready(function(){
                 <div id="csEnd" class="slide csSlide">
                 </div>
 
-             <div id="proj1" class="slide projectHeader">
-                <h2> PeterMCottle.com </h2>
-            </div>
-                <div id="pmc1" class="slide pmcSlide">
-                    <h4> Programming this website </h4>
-                    <p>When I was shopping around for new personal website ideas, Hakim El Hattab's <a target="_blank" href="http://lab.hakim.se/reveal-js/">REVEAL.JS</a> stood out as a really unique and interesting concept. The only downside was that Hakim's implementation was more focused on actual slide decks rather than a fully 3D, heirarchal navigation system for the web. Using his work as inspiration, I set out to implement a unique (and hopefully cool) way to present static content on the web.</p>
-                </div>
-                <div id="pmc2" class="slide pmcSlide">
-                    <h4>Implementation</h4>
-                    <p>The majority of the heavy lifting is done via the webkit transition CSS3 property, which is an <b>amazingly</b> way to animate changes between CSS3 states. Once I realized this was the backbone of Reveal.JS, I set out to code my own CSS3 position classes and animate between them.</p>
-                    <p>My original implementation was just animating a static X-Y grid, but that quickly became very restrictive and confusing. I then switched to a doubly-linked graph approach, where the connectivity between slides only exists within memory. Using the arrow keys simplify transfers the current viewport location. This method works great for maintaing intuitive navigation while also lifting any restrictions on the layout of slides.</p>
-                </div>
-                <div id="pmc3" class="slide pmcSlide">
-                    <h4>HTML5</h4>
-                    <p>I also used HTML5 browser history to store the location and state of each viewport location, so you can easily link to and bookmark specific slides. You can also hit the back and forward buttons to traverse the slide graph in the exact reverse order... Try it out now!</p>
-                    <h4>Navigation</h4>
-                    <p>I wanted an intuitive navigation interface that was friendly for both power users and mobile devices. With these two in mind, I settled on a combination of keyboard navigation for "normal" browsers and swipe gestures for mobile devices and tablets. I think this reaches the perfect balance between ease of use and rapid traversal.</p>
-                </div>
-
-
             <div id="proj2" class="slide projectHeader">
                 <h2>ME 280a - Finite Elements </h2>
             </div>
@@ -931,57 +907,6 @@ $j(document).ready(function(){
 
                     <div id="femEnd" class="slide femSlide">
                     </div>
-
-        <div id="fbHackHeader" class="slide projectHeader">
-            <h2>Facebook Hackathon Hacks</h2>
-        </div>
-
-
-            <div id="fbh1" class="slide fbhSlide">
-                <h2>Emoti-Face</h2>
-            </div>
-                <div id="ef1" class="slide efSlide">
-                <h4>Idea</h4>
-                    <p>For the Facebook Hackathon 2011 finals, Anirudh, Josh, and I set out to create a gif-embedding service for Facebook chat. We wanted to be able to inline gifs into chat and record our own, but the real challenge was the idea we used to transfer data between parties.</p>
-                    <p>We essentially decided to transfer the actual binary data of the recorded gif <i>through</i> Facebook chat automatically. This meant writing a huge userscript to actually implement a crude TCP-like protocol and algorithm to send packets through the actual website.</p>
-
-                </div>
-                <div id="ef2" class="slide efSlide">
-                    <h4>Implementation</h4>
-                    <p> We had a localhost python server running to load up the file binary data, convert them to base64 text, and then form actual packets with UUID's and sequence numbers. We dumped all of those packets over localhost into a user script running on Facebook's website. From here we used javascript to populate the chat field and applescript (on the backend) to emulate keypresses. This worked great, until we discovered that Facebook's chat would drop all packets after the first 20.</p>
-                    <p>We then had to essentially come up with a crude TCP-like protocol for handshakes and packet requests. It was pretty hilarious (and quite ironic) that we were implementing TCP on top of TCP, but that's what hackathons are all about!</p>
-                </div>
-                <div id="ef3" class="slide efSlide">
-                    <img class="imgSlide imgBevel imgReflect" src="ef.png"/>
-                </div>
-                <div id="ef4" class="slide efSlide">
-                    <h4>Results </h4>
-                    <p>At the end of 24 hours, we actually had something that worked! We were able to send files over chat and recompile them on the other side. The transfer speed was abysmal, but I think the entire team was simply proud that we got it to work :P</p>
-                    <a target="_blank" href="http://www.youtube.com/watch?v=tk5m0mqsrFs">
-                    Youtube Video showing Transfer</a> <p></p>
-                    <a target="_blank" href="http://news.ycombinator.com/item?id=3310036">HackerNews Article</a>
-                    <p></p>
-                    <a target="_blank" href="https://github.com/pcottle/emotiface">GitHub</a>
-
-                </div>
-
-
-        <div id="fbh2" class="slide fbhSlide">
-            <h2>Youtube Sync</h2>
-        </div>
-            <div id="ys1" class="slide ysSlide">
-                <h4>Idea</h4>
-                    <p>I always liked watching youtube videos together with friends (in real life), but sending them a link over chat just isn't the same experience. I set out to create a youtube sychronization service that embedded into Facebook chat and would sychronize playback between two parties.</p>
-            </div>
-            <div id="ys2" class="slide ysSlide">
-                <h4>Implementation</h4>
-                <p>This hack was pretty simple; it was a userscript running on Facebook to listen for keypresses and embed an iFrame when a youtube link was pasted into chat. There was an external site that handled the youtube embedding and javascript to sychronize the player state, and then I used the excellent Now.JS running on a Node.js instance on heroku to handle the state relays between parties. After a lot of tweaking (and wrestling with the finicky Youtube flash player), I ended up getting something that worked pretty well!</p>
-            </div>
-            <div id="ys3" class="slide ysSlide">
-                <h4>Results</h4>
-                <img class="slideImg imgReflect imgBevel" src="ys.png"/><p></p>
-                <a target="_blank" href="http://www.youtube.com/watch?v=xHWABU4rZAw">Youtube Video</a>
-            </div>
 
     <div id="meHeader" class="slide">
         <h2>
