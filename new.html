@@ -60,6 +60,8 @@ keyMap = {  37:"leftArrow",
 };
 
 idToChildrenClass = {
+    'GeneticGPUHeader':'gpuSlide',
+    'liquidGraphHeader':'lgSlide',
     'friendMapperProj':'fmSlide',
     'berkeleyHeader':'berkSlide',
     '184proj':'csSlide',
@@ -760,6 +762,44 @@ $j(document).ready(function(){
 
 
     </div>
+
+            <div id="liquidGraphHeader" class="slide projectHeader">
+                <h2> Liquid Graph </h2>
+            </div>
+
+                <div id="lg1" class="slide lgSlide">
+                    <h4>Liquid Graph</h4>
+                    <p>Liquid Graph was the implementation of (what will most likely become) my Master's Thesis at UC Berkeley. To summarize in Layman's terms, it rolls a ball out of a maze.</p>
+                    <p>To summarize in more scientific terms, it performs an interesting hybrid algorithm between Artifical Intelligence and Computational Geometry to determine a series of rotations to roll a small particle out of a 2D polygonal mesh. It uses parametric equations for all of the geometric math and search space exploration, so the computational time is quite efficient (in contrast to using something like Euler integration). The AI search exploration step corresponds to tracing out samples from the current concave vertex -- this search is animated on the screen as the algorith runs (resulting in a nice visual result).</p>
+                </div>
+
+                <div id="lg2" class="slide lgSlide">
+                    <img class="slideImg imgReflect imgBevel" src="lg.PNG"/>
+                </div>
+
+                <div id="lg3" class="slide lgSlide">
+                    <img class="slideImg imgReflect imgBevel" src="lg2.PNG"/>
+                </div>
+
+                <div id="lg3" class="slide lgSlide">
+                    <img class="slideImg imgReflect imgBevel" src="lg3.PNG"/>
+                </div>
+
+                <div id="lg4" class="slide lgSlide">
+                    <p>Eventually I'll write up a formal paper for this algorithm, but for now the Github source and Hackernews Discussion will have to suffice. I also highly recommend checking out the demo of the algorithm running!</p>
+                    <a target="_blank" href="http://petercottle.com/liquidGraph/index.html?demo">Algorithm Demo</a>
+                    <a target="_blank" href="http://news.ycombinator.org/item?id=3896283">HackerNews Discussion</a>
+                    <a target="_blank" href="https://github.com/pcottle/LiquidGraph">Github</a>
+                </div>
+
+
+            <div id="GeneticGPUHeader" class="slide projectHeader">
+                <h2> Genetic GPU </h2>
+            </div>
+
+                <div id="gpu1" class="slide gpuSlide">
+
+                </div>
 
             <div id="friendMapperProj" class="slide projectHeader">
                 <h2> Friend Mapper </h2>
