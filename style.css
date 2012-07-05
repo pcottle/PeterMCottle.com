@@ -399,3 +399,7 @@ section.present {
     -webkit-animation-timing-function:ease-out;
 }
 
+.hasLinks {
+    z-index:50000;
+}
+
