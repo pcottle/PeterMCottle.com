@@ -26,25 +26,18 @@ background-image: -webkit-gradient(
     background: -o-radial-gradient(center, ellipse cover, #0066cc 0%,#000000 90%);
     background: -ms-radial-gradient(center, ellipse cover, #0066cc 0%,#000000 90%);
     background: radial-gradient(center, ellipse cover, #0066cc 0%,#000000 90%);
-/* 
-    background: blue;
-    background: -moz-radial-gradient(center, ellipse cover, blue 0%, #000000 90%);
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,blue), color-stop(90%,#000000));
-    background: -webkit-radial-gradient(center, ellipse cover, blue 0%,#000 90%);
-    background: -o-radial-gradient(center, ellipse cover, blue 0%,#000000 90%);
-    background: -ms-radial-gradient(center, ellipse cover, blue 0%,#000000 90%);
-    background: radial-gradient(center, ellipse cover, blue 0%,#000000 90%);
-    */
-    
-   
+
     -webkit-perspective:600px;
+    -moz-perspective:600px;
+    -ms-perspective:600px;
+    -o-perspective:600px;
     font-family: 'Lato', Times, 'Times New Roman', serif;
 	font-size: 36px;
 	font-weight: 200;
 	letter-spacing: -0.02em;
-	
+
 	color: #eee;
-	
+
 }
 
 /****** FONT FACE -- Credit to Hakim El Hattab for this part, and the cubic bezier values ******/
@@ -59,13 +52,13 @@ background-image: -webkit-gradient(
 
 h1, h2, h3, h4,a {
 	margin: 0 0 20px 0;
-	
+
 	color: #eee;
-	
+
 	font-family: 'League Gothic', sans-serif;
 	line-height: 0.9em;
 	letter-spacing: 0.02em;
-	
+
 	text-transform: uppercase;
 	text-shadow: 0px 0px 6px rgba(0,0,0,0.2);
 }
@@ -200,7 +193,7 @@ h1 {
     width:40%;
     height:70%;
     max-height:700px;
-    
+
      -webkit-transform-style: preserve-3d;
    -moz-transform-style: preserve-3d;
    -ms-transform-style: preserve-3d;
@@ -210,7 +203,7 @@ h1 {
 .twoUp {
 	display: block;
 	opacity: 0.0;
-	
+
 	-webkit-transform: translate3d(0, -100%, 0) translate3d(0,-14%,200px);
 	   -moz-transform:  translate3d(0, -100%, 0) translate3d(0,-14%,200px);
 	    -ms-transform:  translate3d(0, -100%, 0) translate3d(0,-14%,200px);
@@ -220,7 +213,7 @@ h1 {
 .oneUp {
 	display: block;
 	opacity: 0.7;
-	
+
 	-webkit-transform:  translate3d(0, -50%, 0) translate3d(0,-14%,200px);
 	   -moz-transform:  translate3d(0, -50%, 0) translate3d(0,-14%,200px);
 	    -ms-transform:  translate3d(0, -50%, 0) translate3d(0,-14%,200px);
@@ -230,7 +223,7 @@ h1 {
 .oneUpExtra {
 	display: block;
 	opacity: 0.7;
-	
+
 	-webkit-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
 	   -moz-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
 	    -ms-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
@@ -240,7 +233,7 @@ h1 {
 .twoUpExtra {
     display:block;
     opacity:0.7;
-	
+
 	-webkit-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
 	   -moz-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
 	    -ms-transform:  translate3d(0, -90%, 0) translate3d(0,-14%,200px);
@@ -252,7 +245,7 @@ h1 {
 .twoDown {
 	display: block;
 	opacity: 0.0;
-	
+
 	-webkit-transform: translate3d(0, 100%, 0)  translate3d(0,35%,-200px);
 	   -moz-transform:  translate3d(0, 100%, 0) translate3d(0,35%,-200px);
 	    -ms-transform:  translate3d(0, 100%, 0) translate3d(0,35%,-200px);
@@ -263,7 +256,7 @@ h1 {
 .oneDown {
 	display: block;
 	opacity: 0.7;
-	
+
 	-webkit-transform: translate3d(0, 70%, 0)  translate3d(0,35%,-200px);
 	   -moz-transform:  translate3d(0, 70%, 0) translate3d(0,35%,-200px);
 	    -ms-transform:  translate3d(0, 70%, 0) translate3d(0,35%,-200px);
@@ -273,7 +266,7 @@ h1 {
 .oneLeft {
 	display: block;
 	opacity: 0.7;
-	
+
 	-webkit-transform: translate3d(-75%, 0, 0) rotateY(-40deg) translate3d(-75%, 0, 0);
 	   -moz-transform: translate3d(-75%, 0, 0) rotateY(-40deg) translate3d(-75%, 0, 0);
 	    -ms-transform: translate3d(-75%, 0, 0) rotateY(-40deg) translate3d(-75%, 0, 0);
@@ -283,7 +276,7 @@ h1 {
 .oneDownLeft {
 	display: block;
 	opacity: 0.00;
-	
+
 	-webkit-transform: translate3d(-75%, 190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
 	   -moz-transform: translate3d(-75%, 190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
 	    -ms-transform: translate3d(-75%, 190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
@@ -304,7 +297,7 @@ opacity: 0.00;
 .oneRight {
 	display: block;
 	opacity: 0.7;
-	
+
 	-webkit-transform: translate3d(75%, 0, 0) rotateY(50deg) translate3d(75%, 0, 0);
 	   -moz-transform: translate3d(75%, 0, 0) rotateY(50deg) translate3d(75%, 0, 0);
 	    -ms-transform: translate3d(75%, 0, 0) rotateY(50deg) translate3d(75%, 0, 0);
@@ -314,7 +307,7 @@ opacity: 0.00;
 .oneUpLeft {
 	display: block;
 	opacity: 0.00;
-	
+
 	-webkit-transform: translate3d(-75%, -190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
 	   -moz-transform: translate3d(-75%, -190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
 	    -ms-transform: translate3d(-75%, -190%, 0) rotateY(-50deg) translate3d(-75%, 0, 0);
@@ -354,7 +347,7 @@ opacity: 0.00;
 .twoLeft {
 	display: block;
 	opacity: 0;
-	
+
 	-webkit-transform: translate3d(-100%, 0, 0) rotateY(-100deg) translate3d(-100%, 0, 0);
 	   -moz-transform: translate3d(-100%, 0, 0) rotateY(-100deg) translate3d(-100%, 0, 0);
 	    -ms-transform: translate3d(-100%, 0, 0) rotateY(-100deg) translate3d(-100%, 0, 0);
@@ -364,7 +357,7 @@ opacity: 0.00;
 .twoRight {
 	display: block;
 	opacity: 0;
-	
+
 	-webkit-transform: translate3d(100%, 0, 0) rotateY(100deg) translate3d(100%, 0, 0);
 	   -moz-transform: translate3d(100%, 0, 0) rotateY(100deg) translate3d(100%, 0, 0);
 	    -ms-transform: translate3d(100%, 0, 0) rotateY(100deg) translate3d(100%, 0, 0);
@@ -382,9 +375,9 @@ section.present {
     0% {
         scale(1)
     }
-    50% { 
+    50% {
         scale(1.2) }
-    100% { 
+    100% {
         scale(1) }
 }
 

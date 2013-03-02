@@ -23,7 +23,7 @@
 
 /****
 
-Huge Thanks for Hakim El Hattab (author of Reveal.JS) for giving me the inspiration 
+Huge Thanks for Hakim El Hattab (author of Reveal.JS) for giving me the inspiration
 for the site. I used his cubic bezier values for the transition animations,
 but everything else was coded from scratch.
 
@@ -175,7 +175,7 @@ function clearAdd(anyObj,classToAdd)
     {
         console.log("\n\nModifying this obj:");
         console.log(anyObj);
-        console.log('adding class ' + classToAdd); 
+        console.log('adding class ' + classToAdd);
     }
     anyObj.clearClass();
     //anyObj.jObj.addClass(classToAdd);
@@ -251,7 +251,7 @@ function setClassesOn(centerObj)
 
         if(twoLeft)
         {
-           clearAdd(twoLeft,'twoLeft'); 
+           clearAdd(twoLeft,'twoLeft');
         }
         if(lChild)
         {
@@ -262,7 +262,7 @@ function setClassesOn(centerObj)
     if(centerObj.rightTarget)
     {
         clearAdd(centerObj.rightTarget,'oneRight');
-        
+
         var twoRight = centerObj.rightTarget.rightTarget;
         var rChild = centerObj.rightTarget.children[0];
 
@@ -286,7 +286,7 @@ function setClassesOn(centerObj)
         var parL = par.leftTarget;
         var parR = par.rightTarget;
         var parpar = par.myParent;
-        
+
         if(parpar)
         {
             clearAdd(parpar,'twoUp');
@@ -309,7 +309,7 @@ function setClassesOn(centerObj)
         var childL = child.leftTarget;
 
         clearAdd(child,'oneDown');
-        
+
         //if double down
         if(child.children[0])
         {
@@ -419,16 +419,12 @@ function checkBrowser()
         $j('.holder').css({'margin-top':'5%'});
     }
     if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
-    { 
+    {
          var ffversion=new Number(RegExp.$1);
          if(ffversion < 10)
          {
              $j('body').append('<div class="ruhrho"><p>Sorry, but this website requires 3D CSS3 transforms to work :-/ I love Firefox as much as the next guy, but currently the -moz-transform isnt implemented in the current stable version (and its broken in the FF10 beta).</p><p>Thus, it would be great if you could switch to <a target="_blank" href="http://www.google.com/chrome/">Chrome</a> or <a target="_blank" href="http://www.apple.com/safari/">Safari</a> to view this website</p><p>If thats not an option, I have dumped all the content from the slides below if you need a link or something real quick. But check out the site with a webkit browser, its pretty cool!</p>');
              dumpSlides();
-        }
-        else
-        {
-            alert("Sorry for the JS alert, but Firefox 10+'s webkit transform is pretty broken. I recommend switching to Chrome or Safari to see this site in all it's glory. If not that's fine, my only warning is that everything will be way uglier!");
         }
     }
 }
@@ -683,7 +679,7 @@ $j(document).ready(function(){
         </h3>
         <h4> Please use the Arrow keys or Swipe Gestures for Navigation</h4>
 
-        
+
         <p></p><p></p>
         <h4 id="scottArrow" style="cursor:pointer;text-align:center">▼</h4>
     </div>
@@ -819,7 +815,7 @@ $j(document).ready(function(){
                 </div>
 
                 <div id="gpu5" class="slide gpuSlide">
-                   <p>I completed a writeup on the algorithm for the class; it's from a very high level but should give an idea of the strategies used perform such rapid optimization. The Github Source and a link to the application are below as well</p> 
+                   <p>I completed a writeup on the algorithm for the class; it's from a very high level but should give an idea of the strategies used perform such rapid optimization. The Github Source and a link to the application are below as well</p>
                    </br></br><p style="height:40px"></p>
                     <a target="_blank" href="https://github.com/pcottle/GeneticGPU">Github Source</a>
                      <p></p>
@@ -836,7 +832,7 @@ $j(document).ready(function(){
 
                     <h4>Friend Mapper</h4>
                     <p> In order to learn WebGl and the Facebook graph API over winter break, I wanted to tackle a project that combined them together into a unique application experience. With so many diverse and interesting personal stories on Facebook, it can be hard to really appreciate the beauty of the diverse collection of friends we have. I sought out to visualize these geographic relationships (both in present and in the past) and display them interactively.</p>
-                
+
                 </div>
 
                 <div id="fm2" class="slide fmSlide">
@@ -875,7 +871,7 @@ $j(document).ready(function(){
                 </div>
 
                 <div id="cs2" class="slide csSlide">
-                   <img class="imgSlideTall imgUp imgBevel imgReflect" src="http://petercottle.com/cs184-eh2.png"/> 
+                   <img class="imgSlideTall imgUp imgBevel imgReflect" src="http://petercottle.com/cs184-eh2.png"/>
                 </div>
 
                 <div id="cs3" class="slide csSlide">
@@ -883,7 +879,7 @@ $j(document).ready(function(){
                 </div>
 
                 <div id="cs4" class="slide csSlide">
-                   <h4> Parametric Surfaces </h4> 
+                   <h4> Parametric Surfaces </h4>
 
                    <p> We also completed a small assignment on Parametric surface subdivision, using both a uniform and adaptive algorithm. The assignment was rather simple, but it was really exciting to see an application of such a theoretical concept into actual code to produce a real model. The triangle-based adaptive subdivision algorithm was also fun to code and produces really intricate patterns in the final models.</p>
                    <!--<a target="_blank" href="http://www-inst.eecs.berkeley.edu/~cs184-eh/hw5.html">Main Webpage</a>--!>
@@ -914,13 +910,13 @@ $j(document).ready(function(){
             <div id="proj2" class="slide projectHeader">
                 <h2>ME 280a - Finite Elements </h2>
             </div>
-                    
+
                     <div id="fem1" class="slide femSlide">
                     <h4> ME 280A - Finite Elements </h4>
                         <p>
                         ME 280A was by far the hardest (and most rewarding) class
                         of my academic career. Before taking the class, I thought I understood the finite
-                        element method - stiffness matrices, loading vectors, and 
+                        element method - stiffness matrices, loading vectors, and
                         everything else was quite intuitive and my Matlab
                         scripts worked great.
 
@@ -966,7 +962,7 @@ $j(document).ready(function(){
                         <p>The interesting thing is that after these three days, I actually <i>understood</i> everything. It wasn't like a typical class where you memorize the important concepts and regurgitate them on the test... this was something else altogether. At the end of those three days, we all knew how to derive the weak form for any ODE (whether or not it was non-linear, spatially variant, three dimensional, time-variant, etc etc). We derived (by ourselves) the variables for the Conjugate Gradient method, the process of linearizing and iterating through a non-linear time-variant ODE, the geometric error as a function of the Jacobian mapping, the divergence theorem, Galerkin's best approximation theorem, and many others. It was a crazy 72 hours of my life, but I left that classroom feeling like a graduate student for the first time.</p>
                         <a target="_blank" href="hw7.pdf">Last HW PDF</a>
 
-                        
+
 
                     </div>
 
@@ -991,12 +987,12 @@ $j(document).ready(function(){
                     <div id="berk1" class="slide berkSlide">
                         <h4>Graduate Study</h4>
                         <p>My time at UC Berkeley has been absolutely priceless. The research on campus (in all engineering disciplines) is absolutely brilliant, and being surrounded by such successful peers has driven me to excel in everything that I do. The campus has a great deal of legacy as well, which makes me try even harder to fill the giant shoes left behind by previous Berkeley alumni classes.</p>
-                        <p>Since I'm a graduate student in the MS/PhD Program, I'm not sure when my stay will end, but I have enjoyed every minute of it so far. Go bears!</p>
+                        <p>I left the MS/PhD program with my Masters of Science to pursue even greater goals while working at Facebook, but I still remain very connected to Berkeley's campus.</p>
                         <a target="_blank" href="latest_resume.pdf">My Resume</a>
 
                     </div>
 
-                
+
 
             <div id="sdHeader" class="slide aboutMeSlide">
                 <h4>UC San Diego - Undergraduate</h4>
@@ -1009,7 +1005,7 @@ $j(document).ready(function(){
                     </div>
                     <div id="sd14" class="slide sdSlide">
 
-                    <p>Mechanical study is a completely different (and amazing) beast as compared to computer science. The Navier Stokes equation, electrical design, thermodynamics, heat transfer, fluid mechanics, intermediate dynamics - all of these subjects had a rigorous theoretical basis that really expanded my mind and taught me to think in new and entirely different ways. I decided to teach myself programming in my spare time while taking mechanical classes to get the best of both worlds. I owe a lot of my intellectual ability to the mechanical classes I took and the ways they challenged me.</p> 
+                    <p>Mechanical study is a completely different (and amazing) beast as compared to computer science. The Navier Stokes equation, electrical design, thermodynamics, heat transfer, fluid mechanics, intermediate dynamics - all of these subjects had a rigorous theoretical basis that really expanded my mind and taught me to think in new and entirely different ways. I decided to teach myself programming in my spare time while taking mechanical classes to get the best of both worlds. I owe a lot of my intellectual ability to the mechanical classes I took and the ways they challenged me.</p>
                 </div>
 
                 <div id="sd15" class="slide sdSlide">
@@ -1060,7 +1056,7 @@ $j(document).ready(function(){
         <font class="anArrow" id="upArrow">▲</font>
     </div>
                 <font class="anArrow" id="leftArrow">◄</font>
-                
+
                 <font class="anArrow" style="position:relative;right:-27px;"id="rightArrow">►</font>
     <div style="text-align:center">
         <font id="downArrow" class="anArrow">▼</font>
