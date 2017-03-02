@@ -2,7 +2,7 @@
 
 [PeterMCottle.com](http://petermcottle.com) is my personal website as well as a proof-of-concept of a new browsing interface.
 
-<img src="https://raw.githubusercontent.com/pcottle/PeterMCottle.com/gh-pages/site_pic.png" />
+<img src="http://pcottle.github.io/PeterMCottle.com/site_pic.png" />
 
 ## Idea
 
